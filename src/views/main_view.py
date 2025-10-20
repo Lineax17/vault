@@ -38,12 +38,9 @@ class MainView:
         self.label = Label(self.root, text="Existing Entries")
         self.label.pack(pady=20)
 
-        try:
-            data = self.read_passwords()
-        except (FileNotFoundError, json.JSONDecodeError):
-            data = {
-                "entries": []
-            }
+
+        data = self.read_passwords()
+
         for entry in data["entries"]:
             entry_text = f"Name: {entry['name']}"
             name = entry['name']
@@ -69,17 +66,21 @@ class MainView:
         self.write_entry(data)
 
     def read_passwords(self):
-        with open('src/passwords.json', 'r') as file:
-            data = json.load(file)
+        try:
+            with open('src/passwords.json', 'r') as file:
+                data = json.load(file)
+                return data
+        except (FileNotFoundError, json.JSONDecodeError):
+            data = {
+                "entries": [],
+                "next_id": 1
+            }
+            with open('src/passwords.json', 'w') as file:
+                json.dump(data, file, indent=4)
             return data
 
     def write_entry(self, entry):
-        try:
-            data = self.read_passwords()
-        except (FileNotFoundError, json.JSONDecodeError):
-            data = {
-                "entries": []
-            }
+        data = self.read_passwords()
         data["entries"].append(entry)
 
         with open('src/passwords.json', 'w') as file:
