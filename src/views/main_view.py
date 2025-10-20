@@ -43,14 +43,25 @@ class MainView:
 
         for entry in data["entries"]:
             entry_text = f"Name: {entry['name']}"
-            name = entry['name']
+            entry_id = entry['id']
             self.label = Label(self.root, text=entry_text)
             self.label.pack(pady=5)
-            #self.button = Button(self.root, text="Show", command=self.on_show_button_click(name))
+            self.button = Button(self.root, text="Show", command=self.on_show_button_click(entry_id))
             self.button.pack(pady=10)
 
-    def on_show_button_click(self, name):
-        pass
+    def on_show_button_click(self, entry_id):
+        data = self.read_passwords()
+
+        entry = None
+        for e in data['entries']:
+            if e['id'] == entry_id:
+                entry = e
+                break
+
+        if entry:
+            print(f"Username: {entry['username']}, Password: {entry['password']}")
+        else:
+            print("Eintrag nicht gefunden")
 
     def on_save_button_click(self):
         print(Entry.get(self.name))
