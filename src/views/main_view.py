@@ -53,15 +53,14 @@ class MainView:
 
         self.write_entry(data)
 
-    def read_entry(self, id_number):
+    def read_passwords(self):
         with open('src/passwords.json', 'r') as file:
             data = json.load(file)
             return data
 
     def write_entry(self, entry):
         try:
-            with open('src/passwords.json', 'r') as file:
-                data = json.load(file)
+            data = self.read_passwords()
         except (FileNotFoundError, json.JSONDecodeError):
             data = {
                 "entries": []
