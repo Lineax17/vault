@@ -31,16 +31,31 @@ class MainView:
         self.password = Entry(self.root)
         self.password.pack(pady=10)
 
-        self.button = Button(self.root, text="Save", command=self.on_button_click)
+        self.button = Button(self.root, text="Save", command=self.on_save_button_click)
         self.button.pack(pady=10)
 
         # Existing Entries Section
         self.label = Label(self.root, text="Existing Entries")
         self.label.pack(pady=20)
 
+        try:
+            data = self.read_passwords()
+        except (FileNotFoundError, json.JSONDecodeError):
+            data = {
+                "entries": []
+            }
+        for entry in data["entries"]:
+            entry_text = f"Name: {entry['name']}"
+            name = entry['name']
+            self.label = Label(self.root, text=entry_text)
+            self.label.pack(pady=5)
+            #self.button = Button(self.root, text="Show", command=self.on_show_button_click(name))
+            self.button.pack(pady=10)
 
+    def on_show_button_click(self, name):
+        pass
 
-    def on_button_click(self):
+    def on_save_button_click(self):
         print(Entry.get(self.name))
         print(Entry.get(self.username))
         print(Entry.get(self.password))
