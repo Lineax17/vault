@@ -40,19 +40,24 @@ class MainView:
 
     def setup_existing_entries_section(self):
         # Existing Entries Section
-        self.label = Label(self.root, text="Existing Entries")
-        self.label.pack(pady=20)
+        Label(self.root, text="Existing Entries").pack(pady=20)
 
+        self.entries_frame = Frame(self.root)
+        self.entries_frame.pack()
+
+        self.load_entries()
+
+    def load_entries(self):
+        for widget in self.entries_frame.winfo_children():
+            widget.destroy()
 
         data = self.read_passwords()
 
         for entry in data["entries"]:
             entry_text = f"Name: {entry['name']}"
             entry_id = entry['id']
-            self.label = Label(self.root, text=entry_text)
-            self.label.pack(pady=5)
-            self.button = Button(self.root, text="Show", command=lambda id=entry_id: self.on_show_button_click(id))
-            self.button.pack(pady=10)
+            Label(self.entries_frame, text=entry_text).pack(pady=5)
+            Button(self.entries_frame, text="Show", command=lambda id=entry_id: self.on_show_button_click(id)).pack(pady=10)
 
     def on_show_button_click(self, entry_id):
         data = self.read_passwords()
@@ -81,6 +86,12 @@ class MainView:
         }
 
         self.write_entry(entry)
+
+        # Clear and reload the entry fields
+        self.name.delete(0, END)
+        self.username.delete(0, END)
+        self.password.delete(0, END)
+        self.load_entries()
 
     def read_passwords(self):
         try:
