@@ -46,7 +46,7 @@ class MainView:
             entry_id = entry['id']
             self.label = Label(self.root, text=entry_text)
             self.label.pack(pady=5)
-            self.button = Button(self.root, text="Show", command=self.on_show_button_click(entry_id))
+            self.button = Button(self.root, text="Show", command=lambda id=entry_id: self.on_show_button_click(id))
             self.button.pack(pady=10)
 
     def on_show_button_click(self, entry_id):
