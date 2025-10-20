@@ -57,13 +57,14 @@ class MainView:
         print(Entry.get(self.username))
         print(Entry.get(self.password))
 
-        data = {
+        entry = {
+            "id": self.read_passwords()["next_id"],
             "name": Entry.get(self.name),
             "username": Entry.get(self.username),
             "password": Entry.get(self.password)
         }
 
-        self.write_entry(data)
+        self.write_entry(entry)
 
     def read_passwords(self):
         try:
@@ -82,6 +83,7 @@ class MainView:
     def write_entry(self, entry):
         data = self.read_passwords()
         data["entries"].append(entry)
+        data["next_id"] += 1
 
         with open('src/passwords.json', 'w') as file:
             json.dump(data, file)
