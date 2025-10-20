@@ -9,6 +9,10 @@ class MainView:
         self.root.title("Vault - Password Manager")
         self.root.geometry("550x800")
 
+        self.setup_new_entry_section()
+        self.setup_existing_entries_section()
+
+    def setup_new_entry_section(self):
         # New Entry Section
         self.label = Label(self.root, text="New Entry")
         self.label.pack(pady=20)
@@ -34,6 +38,7 @@ class MainView:
         self.button = Button(self.root, text="Save", command=self.on_save_button_click)
         self.button.pack(pady=10)
 
+    def setup_existing_entries_section(self):
         # Existing Entries Section
         self.label = Label(self.root, text="Existing Entries")
         self.label.pack(pady=20)
