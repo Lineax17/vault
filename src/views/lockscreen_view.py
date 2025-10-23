@@ -1,16 +1,16 @@
 from tkinter import ttk
 
 class LockscreenView:
-
     MASTER_PASSWORD = "lorenz"
 
-    def __init__(self, root):
+    def __init__(self, root, unlock_callback=None):
         self.toggle_btn = None
         self.password_entry = None
-        self.root = root
+        self.check_btn = None
+        self.unlock_callback = unlock_callback
 
+        self.root = root
         self.root.title("Vault - Lockscreen")
-        #self.root.geometry("550x300")
 
         self.show_lockscreen(root)
 
@@ -23,6 +23,10 @@ class LockscreenView:
         self.toggle_btn = ttk.Button(root, text="👁️‍🗨️", width=3, command=self.toggle_password)
         self.toggle_btn.grid(row=0, column=2, padx=4)
 
+        # Check Button
+        self.check_btn = ttk.Button(root, text="CHECK", command=self.check_password)
+        self.check_btn.grid(row=0, column=3, padx=4)
+
     def toggle_password(self):
         """Toggle password visibility."""
         if self.password_entry.cget("show") == "":
@@ -31,3 +35,9 @@ class LockscreenView:
         else:
             self.password_entry.config(show="")
             self.toggle_btn.config(text="🙈")
+
+    def check_password(self):
+        """Check for new password."""
+        if self.password_entry.get() == self.MASTER_PASSWORD:
+            if self.unlock_callback:
+                self.unlock_callback(self)
