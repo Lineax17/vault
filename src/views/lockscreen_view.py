@@ -1,0 +1,33 @@
+from tkinter import ttk
+
+class LockscreenView:
+
+    MASTER_PASSWORD = "lorenz"
+
+    def __init__(self, root):
+        self.toggle_btn = None
+        self.password_entry = None
+        self.root = root
+
+        self.root.title("Vault - Lockscreen")
+        #self.root.geometry("550x300")
+
+        self.show_lockscreen(root)
+
+    def show_lockscreen(self, root):
+        ttk.Label(root, text="Password:").grid(row=0, column=0, padx=8, pady=8, sticky="w")
+        self.password_entry = ttk.Entry(root, show="*")
+        self.password_entry.grid(row=0, column=1, padx=8, pady=8)
+
+        # Toggle Button
+        self.toggle_btn = ttk.Button(root, text="👁️‍🗨️", width=3, command=self.toggle_password)
+        self.toggle_btn.grid(row=0, column=2, padx=4)
+
+    def toggle_password(self):
+        """Toggle password visibility."""
+        if self.password_entry.cget("show") == "":
+            self.password_entry.config(show="*")
+            self.toggle_btn.config(text="👁️‍🗨️")
+        else:
+            self.password_entry.config(show="")
+            self.toggle_btn.config(text="🙈")
