@@ -7,7 +7,7 @@ class MainView:
     def __init__(self, root):
         self.root = root
         self.root.title("Vault - Password Manager")
-        self.root.geometry("550x800")
+        self.root.geometry("350x600")
 
         self.setup_new_entry_section()
         self.setup_existing_entries_section()
