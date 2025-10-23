@@ -4,7 +4,12 @@ from src.views.lockscreen_view import LockscreenView
 from src.views.main_view import MainView
 
 def on_unlock_success(lockscreen):
-    """Called when the lockscreen is successfully unlocked."""
+    """
+    Called when the lockscreen is successfully unlocked.
+
+    Args:
+        lockscreen (LockscreenView): The lockscreen view instance.
+    """
     # Destroy all lockscreen widgets
     for widget in lockscreen.root.winfo_children():
         widget.destroy()

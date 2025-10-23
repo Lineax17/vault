@@ -15,6 +15,12 @@ class LockscreenView:
         self.show_lockscreen(root)
 
     def show_lockscreen(self, root):
+        """
+        Display the lockscreen of the application.
+
+        Args:
+            root (Tk): The root Tkinter window.
+        """
         ttk.Label(root, text="Password:").grid(row=0, column=0, padx=8, pady=8, sticky="w")
         self.password_entry = ttk.Entry(root, show="*")
         self.password_entry.grid(row=0, column=1, padx=8, pady=8)
@@ -37,7 +43,7 @@ class LockscreenView:
             self.toggle_btn.config(text="🙈")
 
     def check_password(self):
-        """Check for new password."""
+        """Check if the typed password is the MASTER_PASSWORD."""
         if self.password_entry.get() == self.MASTER_PASSWORD:
             if self.unlock_callback:
                 self.unlock_callback(self)

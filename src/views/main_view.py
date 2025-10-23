@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import ttk
 import json
 
+
 class MainView:
     def __init__(self, root):
         self.root = root
@@ -13,7 +14,7 @@ class MainView:
         self.setup_existing_entries_section()
 
     def setup_new_entry_section(self):
-        # New Entry Section
+        """ Setting up the section of main view for new entries """
         self.label = Label(self.root, text="New Entry")
         self.label.pack(pady=20)
 
@@ -39,10 +40,9 @@ class MainView:
         self.button.pack(pady=10)
 
     def setup_existing_entries_section(self):
-        # Existing Entries Section
+        """ Setting up the section of main view for existing entries """
         self.label = Label(self.root, text="Existing Entries")
         self.label.pack(pady=20)
-
 
         data = self.read_passwords()
 
@@ -55,6 +55,12 @@ class MainView:
             self.button.pack(pady=10)
 
     def on_show_button_click(self, entry_id):
+        """
+        Show username and password for the given entry id
+
+        Args:
+            entry_id (int): The id of the entry to show
+        """
         data = self.read_passwords()
 
         entry = None
@@ -69,9 +75,7 @@ class MainView:
             print("Eintrag nicht gefunden")
 
     def on_save_button_click(self):
-        print(Entry.get(self.name))
-        print(Entry.get(self.username))
-        print(Entry.get(self.password))
+        """ Save new entry to passwords.json """
 
         entry = {
             "id": self.read_passwords()["next_id"],
@@ -83,6 +87,12 @@ class MainView:
         self.write_entry(entry)
 
     def read_passwords(self):
+        """
+            Read passwords from passwords.json
+
+            Returns:
+                dict: The data from passwords.json
+        """
         try:
             with open('src/passwords.json', 'r') as file:
                 data = json.load(file)
@@ -97,6 +107,12 @@ class MainView:
             return data
 
     def write_entry(self, entry):
+        """
+        Write a new entry to passwords.json
+
+        Args:
+            entry (dict): The entry to write
+        """
         data = self.read_passwords()
         data["entries"].append(entry)
         data["next_id"] += 1
