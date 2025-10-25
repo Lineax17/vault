@@ -3,80 +3,144 @@ from tkinter import *
 from tkinter import ttk
 import json
 
+
 class MainView:
     def __init__(self, root):
         self.root = root
         self.root.title("Vault - Password Manager")
-        self.root.geometry("550x800")
 
         self.setup_new_entry_section()
         self.setup_existing_entries_section()
 
     def setup_new_entry_section(self):
-        # New Entry Section
-        self.label = Label(self.root, text="New Entry")
-        self.label.pack(pady=20)
+        """ Setting up the section of main view for new entries """
 
-        self.label = Label(self.root, text="Name:")
+        self.label = Label(self.root, text="New Entry", font=("Arial", 16, "bold"))
         self.label.pack(pady=10)
 
-        self.name = Entry(self.root)
-        self.name.pack(pady=10)
+        new_entry_section = ttk.Frame(self.root)
+        new_entry_section.pack(pady=10)
 
-        self.label = Label(self.root, text="Username:")
-        self.label.pack(pady=10)
+        self.label = Label(new_entry_section, text="Name:")
+        self.label.grid(row=0, column=0, padx=8, pady=8, sticky="w")
 
-        self.username = Entry(self.root)
-        self.username.pack(pady=10)
+        self.name = Entry(new_entry_section)
+        self.name.grid(row=0, column=1, padx=8, pady=8, sticky="w")
 
-        self.label = Label(self.root, text="Password:")
-        self.label.pack(pady=10)
+        self.label = Label(new_entry_section, text="Username:")
+        self.label.grid(row=1, column=0, padx=8, pady=8, sticky="w")
 
-        self.password = Entry(self.root)
-        self.password.pack(pady=10)
+        self.username = Entry(new_entry_section)
+        self.username.grid(row=1, column=1, padx=8, pady=8, sticky="w")
 
-        self.button = Button(self.root, text="Save", command=self.on_save_button_click)
-        self.button.pack(pady=10)
+        self.label = Label(new_entry_section, text="Password:")
+        self.label.grid(row=2, column=0, padx=8, pady=8, sticky="w")
+
+        self.password = Entry(new_entry_section)
+        self.password.grid(row=2, column=1, padx=8, pady=8, sticky="w")
+
+        self.button = Button(new_entry_section, text="Save", command=self.on_save_button_click)
+        self.button.grid(row=3, column=0, padx=8, pady=8, sticky="w")
 
     def setup_existing_entries_section(self):
-        # Existing Entries Section
-        Label(self.root, text="Existing Entries").pack(pady=20)
+        """ Setting up the section of main view for existing entries """
+        self.label = Label(self.root, text="Existing Entries", font=("Arial", 16, "bold"))
+        self.label.pack(pady=20)
 
-        self.entries_frame = Frame(self.root)
-        self.entries_frame.pack()
+        data = self.read_passwords()
 
-        self.load_entries()
+        entries_frame = Frame(self.root)
+        entries_frame.pack(pady=10)
 
-    def load_entries(self):
-        for widget in self.entries_frame.winfo_children():
+        for index, entry in enumerate(data["entries"]):
+            entry_id = entry['id']
+
+            # Name Label
+            name_label = Label(entries_frame, text=entry['name'])
+            name_label.grid(row=index, column=0, padx=4, pady=4)
+
+            # Password Entry (hidden)
+            password_entry = Entry(entries_frame, width=15, show="*")
+            password_entry.insert(0, entry['password'])
+            password_entry.config(state='readonly')
+            password_entry.grid(row=index, column=1, padx=4, pady=4)
+
+            # Toggle Button (Show/Hide)
+            toggle_btn = Button(
+                entries_frame,
+                text="👁",
+                width=3,
+                command=lambda e=password_entry: self.toggle_password(e)
+            )
+            toggle_btn.grid(row=index, column=2, padx=2, pady=4)
+
+            # Copy Button
+            copy_btn = Button(
+                entries_frame,
+                text="📋",
+                width=3,
+                command=lambda pwd=entry['password']: self.copy_to_clipboard(pwd)
+            )
+            copy_btn.grid(row=index, column=3, padx=2, pady=4)
+
+            # Delete Button
+            delete_btn = Button(
+                entries_frame,
+                text="🗑",
+                width=3,
+                command=lambda id=entry_id: self.delete_entry(id)
+            )
+            delete_btn.grid(row=index, column=4, padx=2, pady=4)
+
+    def toggle_password(self, entry_widget):
+        """
+        Show/hide password
+
+        Args:
+            entry_widget (tkinter.Entry): The Entry widget containing the password
+        """
+        if entry_widget.cget('show') == '*':
+            entry_widget.config(show='')
+        else:
+            entry_widget.config(show='*')
+
+    def copy_to_clipboard(self, text):
+        """
+        Copy text to clipboard
+
+        Args:
+            text (str): The text to copy
+        """
+        self.root.clipboard_clear()
+        self.root.clipboard_append(text)
+        self.root.update()
+
+    def delete_entry(self, entry_id):
+        """
+        Deletes an entry from passwords.json
+
+        Args:
+            entry_id (int): The ID of the entry to delete
+        """
+        data = self.read_passwords()
+        data["entries"] = [entry for entry in data["entries"] if entry['id'] != entry_id]
+
+        with open('src/passwords.json', 'w') as file:
+            json.dump(data, file, indent=4)
+
+        # Reload view
+        self.refresh_view()
+
+    def refresh_view(self):
+        """ Destroys all widgets and rebuilds the view """
+        for widget in self.root.winfo_children():
             widget.destroy()
 
-        data = self.read_passwords()
-
-        for entry in data["entries"]:
-            entry_text = f"Name: {entry['name']}"
-            entry_id = entry['id']
-            Label(self.entries_frame, text=entry_text).pack(pady=5)
-            Button(self.entries_frame, text="Show", command=lambda id=entry_id: self.on_show_button_click(id)).pack(pady=10)
-
-    def on_show_button_click(self, entry_id):
-        data = self.read_passwords()
-
-        entry = None
-        for e in data['entries']:
-            if e['id'] == entry_id:
-                entry = e
-                break
-
-        if entry:
-            print(f"Username: {entry['username']}, Password: {entry['password']}")
-        else:
-            print("Eintrag nicht gefunden")
+        self.setup_new_entry_section()
+        self.setup_existing_entries_section()
 
     def on_save_button_click(self):
-        print(Entry.get(self.name))
-        print(Entry.get(self.username))
-        print(Entry.get(self.password))
+        """ Save new entry to passwords.json """
 
         entry = {
             "id": self.read_passwords()["next_id"],
@@ -86,14 +150,15 @@ class MainView:
         }
 
         self.write_entry(entry)
-
-        # Clear and reload the entry fields
-        self.name.delete(0, END)
-        self.username.delete(0, END)
-        self.password.delete(0, END)
-        self.load_entries()
+        self.refresh_view()
 
     def read_passwords(self):
+        """
+            Read passwords from passwords.json
+
+            Returns:
+                dict: The data from passwords.json
+        """
         try:
             with open('src/passwords.json', 'r') as file:
                 data = json.load(file)
@@ -108,6 +173,12 @@ class MainView:
             return data
 
     def write_entry(self, entry):
+        """
+        Write a new entry to passwords.json
+
+        Args:
+            entry (dict): The entry to write
+        """
         data = self.read_passwords()
         data["entries"].append(entry)
         data["next_id"] += 1
