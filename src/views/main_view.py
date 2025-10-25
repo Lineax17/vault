@@ -15,7 +15,7 @@ class MainView:
 
     def setup_new_entry_section(self):
         """ Setting up the section of main view for new entries """
-        self.label = Label(self.root, text="New Entry")
+        self.label = Label(self.root, text="New Entry", font=("Arial", 16, "bold"))
         self.label.pack(pady=20)
 
         self.label = Label(self.root, text="Name:")
@@ -41,18 +41,23 @@ class MainView:
 
     def setup_existing_entries_section(self):
         """ Setting up the section of main view for existing entries """
-        self.label = Label(self.root, text="Existing Entries")
+        self.label = Label(self.root, text="Existing Entries", font=("Arial", 16, "bold"))
         self.label.pack(pady=20)
 
         data = self.read_passwords()
 
+        entries_frame = Frame(self.root)
+        entries_frame.pack(pady=10)
+
         for entry in data["entries"]:
-            entry_text = f"Name: {entry['name']}"
+            entry_text = f"{entry['name']}"
             entry_id = entry['id']
-            self.label = Label(self.root, text=entry_text)
-            self.label.pack(pady=5)
-            self.button = Button(self.root, text="Show", command=lambda id=entry_id: self.on_show_button_click(id))
-            self.button.pack(pady=10)
+            self.label = Label(entries_frame, text=entry_text)
+            self.label.grid(row=0, column=0, padx=4)
+            self.password_entry = ttk.Entry(entries_frame, show="*")
+            self.password_entry.grid(row=0, column=1, padx=8, pady=8)
+            self.button = Button(entries_frame, text="Show", command=lambda id=entry_id: self.on_show_button_click(id))
+            self.button.grid(row=0, column=2, padx=4)
 
     def on_show_button_click(self, entry_id):
         """
