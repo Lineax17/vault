@@ -8,7 +8,6 @@ class MainView:
     def __init__(self, root):
         self.root = root
         self.root.title("Vault - Password Manager")
-        #self.root.geometry("350x600")
 
         self.setup_new_entry_section()
         self.setup_existing_entries_section()
@@ -63,7 +62,7 @@ class MainView:
             # Password Entry (hidden)
             password_entry = Entry(entries_frame, width=15, show="*")
             password_entry.insert(0, entry['password'])
-            password_entry.config(state='readonly')  # Read-only
+            password_entry.config(state='readonly')
             password_entry.grid(row=index, column=1, padx=4, pady=4)
 
             # Toggle Button (Show/Hide)
@@ -94,20 +93,35 @@ class MainView:
             delete_btn.grid(row=index, column=4, padx=2, pady=4)
 
     def toggle_password(self, entry_widget):
-        """ Show/hide password """
+        """
+        Show/hide password
+
+        Args:
+            entry_widget (tkinter.Entry): The Entry widget containing the password
+        """
         if entry_widget.cget('show') == '*':
             entry_widget.config(show='')
         else:
             entry_widget.config(show='*')
 
     def copy_to_clipboard(self, text):
-        """ Copy text to clipboard """
+        """
+        Copy text to clipboard
+
+        Args:
+            text (str): The text to copy
+        """
         self.root.clipboard_clear()
         self.root.clipboard_append(text)
         self.root.update()
 
     def delete_entry(self, entry_id):
-        """ Deletes an entry from passwords.json """
+        """
+        Deletes an entry from passwords.json
+
+        Args:
+            entry_id (int): The ID of the entry to delete
+        """
         data = self.read_passwords()
         data["entries"] = [entry for entry in data["entries"] if entry['id'] != entry_id]
 
