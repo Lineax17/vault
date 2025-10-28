@@ -1,4 +1,5 @@
 from tkinter import Tk
+from src.lib.database import init_db
 
 from src.views.lockscreen_view import LockscreenView
 from src.views.main_view import MainView
@@ -18,6 +19,7 @@ def on_unlock_success(lockscreen):
     MainView(lockscreen.root)
 
 if __name__ == '__main__':
+    init_db()
     root = Tk()
     lockscreen = LockscreenView(root, unlock_callback=on_unlock_success)
     root.mainloop()
