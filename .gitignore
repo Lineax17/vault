@@ -214,3 +214,14 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+src/passwords.json
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/vcs.xml
+.idea/vault.iml
+.idea/modules.xml
+.idea/misc.xml
+.idea/copilot.data.migration.ask2agent.xml
+.idea/copilot.data.migration.ask.xml
+.idea/copilot.data.migration.edit.xml
+.idea/copilot.data.migration.agent.xml
+.idea/.gitignore
